@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coastal Chase</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Environment Layers */
+        .scene {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(to bottom, #87CEEB 0%, #87CEEB 50%, #f2d2a9 50%, #f2d2a9 100%);
+        }
+
+        .ocean {
+            position: absolute;
+            top: 40%;
+            width: 100%;
+            height: 15%;
+            background: #0077be;
+            opacity: 0.8;
+            z-index: 1;
+        }
+
+        .shoreline {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            filter: blur(5px);
+            z-index: 2;
+        }
+
+        /* Characters */
+        .character {
+            position: absolute;
+            bottom: 20%;
+            transition: left 0.1s linear;
+        }
+
+        #human {
+            font-size: 50px;
+            z-index: 10;
+        }
+
+        #crocodile {
+            font-size: 60px;
+            z-index: 9;
+            transform: scaleX(-1); /* Flips emoji to face right */
+        }
+
+        /* UI */
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+<div class="scene">
+    <div class="ocean"></div>
+    <div class="shoreline"></div>
+
+    <div id="human" class="character">🏃</div>
+    <div id="crocodile" class="character">🐊</div>
+
+    <div class="controls">
+        <h2>Coastal Escape!</h2>
+        <p>The crocodile is gaining! Move your mouse or touch the screen to lead the human away.</p>
+        <p id="status">Status: 🏃 Running for life!</p>
+    </div>
+</div>
+
+<script>
+    const human = document.getElementById('human');
+    const croc = document.getElementById('crocodile');
+    const statusText = document.getElementById('status');
+
+    let humanPos = { x: 500, y: 70 };
+    let crocPos = { x: 100, y: 72 };
+    
+    // Smooth chase logic
+    function updatePositions() {
+        // Crocodile moves toward human slowly
+        const speed = 2.5;
+        const dx = humanPos.x - crocPos.x;
+        
+        if (Math.abs(dx) > 10) {
+            crocPos.x += (dx > 0 ? 1 : -1) * speed;
+        }
+
+        // Apply positions
+        human.style.left = humanPos.x + 'px';
+        croc.style.left = crocPos.x + 'px';
+
+        // Check for "catch"
+        const distance = Math.abs(humanPos.x - crocPos.x);
+        if (distance < 40) {
+            statusText.innerText = "Status: 🐊 NOM NOM NOM!";
+            human.innerText = "💀";
+        } else {
+            statusText.innerText = "Status: 🏃 Running for life!";
+            human.innerText = "🏃";
+        }
+
+        requestAnimationFrame(updatePositions);
+    }
+
+    // Interaction: Human follows mouse
+    window.addEventListener('mousemove', (e) => {
+        humanPos.x = e.clientX - 25;
+    });
+
+    // Touch support
+    window.addEventListener('touchmove', (e) => {
+        humanPos.x = e.touches[0].clientX - 25;
+    });
+
+    updatePositions();
+</script>
+
+</body>
+</html>
