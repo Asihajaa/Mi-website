@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Canvas Animation</title>
+    <style>
+        body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f0f0; }
+        #canvas { border: 2px solid #333; background: white; }
+    </style>
+</head>
+<body>
+
+<canvas id="canvas" width="600" height="300"></canvas>
+
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Basic function to draw a simple "stick" figure
+    function drawStickman(x, y, color) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 3;
+        
+        // Head
+        ctx.beginPath();
+        ctx.arc(x, y, 10, 0, Math.PI * 2);
+        ctx.stroke();
+        
+        // Body
+        ctx.beginPath();
+        ctx.moveTo(x, y + 10);
+        ctx.lineTo(x, y + 40);
+        ctx.stroke();
+    }
+
+    // Animation loop
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw floor
+        ctx.beginPath();
+        ctx.moveTo(0, 250);
+        ctx.lineTo(600, 250);
+        ctx.stroke();
+
+        // Draw two stickmen
+        drawStickman(150, 210, 'red');
+        drawStickman(450, 210, 'blue');
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+</script>
+</body>
+</html>
